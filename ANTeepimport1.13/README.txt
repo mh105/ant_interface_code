@@ -1,4 +1,15 @@
   ========================================
+  December 2024
+  MATLAB / EEGLAB import / plugin for ANT continuous data
+  Version x.xx
+  ========================================
+
+  Alex He from Stanford University cleaned up the 1.13 EEGLAB plugin distribution:
+  - Removed the average and trigger file support since they are not used anymore.
+  - Compiled the eepv4_read_info and eepv4_read functions on Apple Silicon MATLAB
+    to provide the .mexmaca64 mex files.
+
+  ========================================
   Februari 2017
   MATLAB / EEGLAB import / plugin for ANT continuous data, trigger files and averages
   Version 1.13
