@@ -7,7 +7,7 @@
   Alex He from Stanford University cleaned up the 1.13 EEGLAB plugin distribution:
   - Removed the average and trigger file support since they are not used anymore.
   - Compiled the eepv4_read_info and eepv4_read functions on Apple Silicon MATLAB
-    to provide the .mexmaca64 mex files.
+    to provide the .mexmaca64 mex files. Source code modified from libeep 3.3.179.
 
   ========================================
   Februari 2017
