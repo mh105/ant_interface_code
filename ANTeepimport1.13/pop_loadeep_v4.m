@@ -146,6 +146,13 @@ for i=1:size(r.v4_data.triggers, 2)
     EEG.event(i).type = strcat(EEG.event(i).type, sprintf(', %s', r.v4_data.triggers(i).condition));
   end
   EEG.event(i).duration = r.v4_data.triggers(i).duration;
+
+  % save all instances of impedance values in the trigger table
+  if strcmp(r.v4_data.triggers(i).description, 'Impedance')
+      imp = strsplit(r.v4_data.triggers(i).impedances, ' ');
+      imp = cellfun(@str2double, imp);
+      EEG.event(i).impedance = imp;
+  end
 end
 
 % In the asalab EEG system, only the initial impedance is taken and

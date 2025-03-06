@@ -7,7 +7,7 @@ function [ EEG ] = ANT_interface_readcnt(filename, filepath, dsrate, verbose)
 % (if the recording was broken into multiple segments) with the same naming
 % before the file extension.
 %
-% Last edit: Alex He 05/30/2024
+% Last edit: Alex He 03/05/2025
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .cnt file, the .evt and .seg
@@ -55,16 +55,16 @@ catch
     % has the ANT_interface_readcnt.m or at least the folder containing it has
     % been added to path when calling this function. We will try to addpath to
     % ANT importer and EEGLAB directly.
-    
+
     ANTinterface_path = which('ANT_interface_readcnt');
     temp = strsplit(ANTinterface_path, 'ANT_interface_readcnt.m');
-    
+
     % Add path to ANT importer
     addpath(fullfile(temp{1}, 'ANTeepimport1.13'))
-    
+
     % Add path to EEGLAB
     addpath(fullfile(temp{1}, 'eeglab14_1_2b'))
-    
+
     % Add path to EEGLAB firfilt plugin for pop_resample()
     addpath(fullfile(temp{1}, 'eeglab14_1_2b/plugins/firfilt1.6.2'))
 end
@@ -84,7 +84,7 @@ if verbose
         disp('Loading data file...')
     end
     disp(' ')
-    
+
     if ~isfile(datafn) % if .cnt file not on disk report error
         error('Cannot locate the .cnt file. Please check the path and filename :\n%s.',datafn)
     else
@@ -133,10 +133,10 @@ for i = 1:length(sample_point)-1
         disp(['sample1: ', num2str(sample1)])
         disp(['sample2: ', num2str(sample2)])
     end
-    
+
     % use pop_loadeep_v4.m function to load in the segment
     EEG = pop_loadeep_v4(datafn, 'sample1', sample1, 'sample2', sample2);
-    
+
     % test whether export montage and filtering was applied
     if i == 1 % we only need to check the first segment to raise the error
         [pxx,f] = pwelch(EEG.data(1,:),[],[],[],EEG.srate);
@@ -148,13 +148,13 @@ for i = 1:length(sample_point)-1
         mean_db_high = mean(pxx_db_high(isfinite(pxx_db_high)));
         assert(mean_db_high >= -100, 'The high frequency power in LM is abnormally low. Do not apply montages and filtering when exporting raw data in eego!')
     end
-    
+
     if dsrate(1) % if downsampling flag is true
         % For using pop_resample function: trials number is updated to be 1
         if EEG.trials == 0
             EEG.trials = 1;
         end
-        
+
         % downsample to desired sampling rate in Hz as specified by dsrate(2)
         % pop_resample function
         % Inputs:
@@ -168,14 +168,14 @@ for i = 1:length(sample_point)-1
         %                sample) {default 0.2}
         if verbose; disp(' '); disp('Downsampling...'); end
         EEG = pop_resample(EEG, dsrate(2), 0.9, 0.1);
-        
+
         % When EEG.event is resampled, there could be non-integer latency
         % values. We write a for loop to convert them to next larger
         % integer using the ceil() function.
         for j = 1:length(EEG.event)
             EEG.event(j).latency = ceil(EEG.event(j).latency);
         end
-        
+
     else
         if verbose
             disp(' ')
@@ -183,10 +183,10 @@ for i = 1:length(sample_point)-1
         end
         EEG = eeg_checkset(EEG, 'eventconsistency');
     end
-    
+
     % save the downsampled data to a temporary cell
     EEG_store{i} = EEG;
-    
+
     % clearvars to free up memory
     clearvars EEG
 end
@@ -222,10 +222,10 @@ for i = 2:length(EEG_store) % starts from 2nd index
     assert(EEG.srate == EEG_store{i}.srate, 'Different sampling rate, please check!')
     assert(strcmp(EEG.comments, EEG_store{i}.comments), 'Different original file!')
     assert(size(EEG.data, 1) == size(EEG_store{i}.data, 1), 'Different numbers of channels!')
-    
+
     % Use EEGLAB function pop_mergeset() to merge the two structures
     EEG = pop_mergeset(EEG, EEG_store{i});
-    
+
     % Check if impedance measures should be incorporated
     if ~isempty(EEG_store{i}.endimp)
         EEG.endimp = EEG_store{i}.endimp;
@@ -233,7 +233,7 @@ for i = 2:length(EEG_store) % starts from 2nd index
     if ~isempty(EEG_store{i}.initimp)
         EEG.initimp = EEG_store.initimp;
     end
-    
+
     if verbose; disp(['Concatenating the ' num2str(i) 'th segment...']); end
 end
 if verbose
@@ -302,38 +302,38 @@ end
 if strcmp(montage, 'auto')
     % Extract the current channel labels
     labels = {EEG.chanlocs.labels};
-    
+
     % Auto-detect among waveguard montages
-    
+
     % 128-channel montages
     if strcmp(labels{1}, 'Lm') && ...
             strcmp(labels{85}, 'VEOGL') && ...
             ~any(cellfun(@(x) strcmp(x, 'Z3'), labels)) && ...
             ~any(cellfun(@(x) strcmp(x, 'LL14'), labels))
         montage = 'gelDuke-Z3';
-        
+
     elseif strcmp(labels{1}, 'Z2') && ...
             strcmp(labels{66}, 'LL14') && ...
             ~any(cellfun(@(x) strcmp(x, 'Z7'), labels)) && ...
             ~any(cellfun(@(x) strcmp(x, 'VEOGL'), labels))
         montage = 'salineNet-Z7';
-        
+
     % 64-channel montages
     elseif strcmp(labels{1}, 'VEOGL') && ...
             strcmp(labels{2}, '1Z') && ...
             ~any(cellfun(@(x) strcmp(x, '0Z'), labels)) && ...
             ~any(cellfun(@(x) strcmp(x, '11L'), labels))
         montage = 'gelDuke-0Z';
-        
+
     elseif strcmp(labels{1}, '1Z') && ...
             strcmp(labels{30}, '11R') && ...
             ~any(cellfun(@(x) strcmp(x, '5Z'), labels)) && ...
             ~any(cellfun(@(x) strcmp(x, 'VEOGL'), labels))
         montage = 'salineNet-5Z';
-        
+
     else
         error('Could not detect a compatible montage. Please manually check!')
-        
+
     end
 end
 
