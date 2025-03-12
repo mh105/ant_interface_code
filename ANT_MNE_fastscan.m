@@ -715,7 +715,7 @@ else
     fastscan.landmark_waveguard_xyz = newlandmark;
     
     % Digitization labels
-    fastscan.elc_labels = {chanlocs_subject_fastscan_order.labels};
+    fastscan.elc_labels = {chanlocs_subject_fastscan_order.labels}';
     fastscan.landmark_labels = {'rpa'; 'nasion'; 'lpa'}; % Right Preauricular Point, Nasion, Left Preauricular Point
     
     % Re-order into the Waveguard template electrode order that is almost
