@@ -274,7 +274,7 @@ function [ EEG ] = ANT_interface_setmontage(EEG, montage)
 % and read with ANT_interface_readcnt(), or as BrainVision files and read
 % directly into MNE-Python.
 %
-% Last edit: Alex He 09/02/2024
+% Last edit: Alex He 04/01/2025
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - EEG:          an EEG structure with EEG.data in the order of
@@ -313,6 +313,12 @@ if strcmp(montage, 'auto')
         montage = 'gelDuke-Z3';
 
     elseif strcmp(labels{1}, 'Z2') && ...
+            strcmp(labels{66}, 'VEOGL') && ...
+            ~any(cellfun(@(x) strcmp(x, 'Z3'), labels)) && ...
+            ~any(cellfun(@(x) strcmp(x, 'LL14'), labels))
+        montage = 'salineDuke-Z3';
+
+    elseif strcmp(labels{1}, 'Z2') && ...
             strcmp(labels{66}, 'LL14') && ...
             ~any(cellfun(@(x) strcmp(x, 'Z7'), labels)) && ...
             ~any(cellfun(@(x) strcmp(x, 'VEOGL'), labels))
@@ -341,53 +347,53 @@ end
 % Set the number of expected electrodes based on montage - actualy numbers
 % may exceed this value if additional auxiliary electrodes are used
 switch montage
-    case {'gelDuke-Z3', 'salineNet-Z7'}
-        n_expected = 129;
+    case {'gelDuke-Z3', 'salineDuke-Z3', 'salineNet-Z7'}
+        n_referential_leads = 129;
     case {'gelDuke-0Z', 'salineNet-5Z'}
-        n_expected = 65;
+        n_referential_leads = 65;
 end
 
 % Move the extra channels (such as bipolar) if there is any
-if EEG.nbchan >= n_expected
-    EEG.data(n_expected+1:EEG.nbchan+1, :) = EEG.data(n_expected:end, :);
-    EEG.chanlocs(n_expected+1:EEG.nbchan+1) = EEG.chanlocs(n_expected:end);
+if EEG.nbchan >= n_referential_leads
+    EEG.data(n_referential_leads+1:EEG.nbchan+1, :) = EEG.data(n_referential_leads:end, :);
+    EEG.chanlocs(n_referential_leads+1:EEG.nbchan+1) = EEG.chanlocs(n_referential_leads:end);
     if ~isempty(EEG.initimp)
-        EEG.initimp(n_expected+1:EEG.nbchan+1) = EEG.initimp(n_expected:end);
+        EEG.initimp(n_referential_leads+1:EEG.nbchan+1) = EEG.initimp(n_referential_leads:end);
     end
     if ~isempty(EEG.endimp)
-        EEG.endimp(n_expected+1:EEG.nbchan+1) = EEG.endimp(n_expected:end);
+        EEG.endimp(n_referential_leads+1:EEG.nbchan+1) = EEG.endimp(n_referential_leads:end);
     end
 end
 
 % Insert a reference channel as zero recording
-EEG.data(n_expected, :) = zeros(1, EEG.pnts);
+EEG.data(n_referential_leads, :) = zeros(1, EEG.pnts);
 
 % Update the reference field
 EEG.ref = 'see refscheme';
 
 % Add the reference channel to chanlocs
 switch montage
-    case 'gelDuke-Z3'
-        EEG.chanlocs(n_expected).labels = 'Z3';
+    case {'gelDuke-Z3', 'salineDuke-Z3'}
+        EEG.chanlocs(n_referential_leads).labels = 'Z3';
         EEG.refscheme = 'Z3';
     case 'salineNet-Z7'
-        EEG.chanlocs(n_expected).labels = 'Z7';
+        EEG.chanlocs(n_referential_leads).labels = 'Z7';
         EEG.refscheme = 'Z7';
     case 'gelDuke-0Z'
-        EEG.chanlocs(n_expected).labels = '0Z';
+        EEG.chanlocs(n_referential_leads).labels = '0Z';
         EEG.refscheme = '0Z';
     case 'salineNet-5Z'
-        EEG.chanlocs(n_expected).labels = '5Z';
+        EEG.chanlocs(n_referential_leads).labels = '5Z';
         EEG.refscheme = '5Z';
 end
 
 % Update impedance values - all auxiliary channels should also be NaN
 if ~isempty(EEG.initimp)
-    EEG.initimp(n_expected:EEG.nbchan+1) = NaN;
+    EEG.initimp(n_referential_leads:EEG.nbchan+1) = NaN;
 end
 
 if ~isempty(EEG.endimp)
-    EEG.endimp(n_expected:EEG.nbchan+1) = NaN;
+    EEG.endimp(n_referential_leads:EEG.nbchan+1) = NaN;
 end
 
 % Update the number of channels
@@ -399,7 +405,7 @@ EEG.nbchan = size(EEG.data, 1);
 
 % Load an appropriate montage template
 switch montage
-    case 'gelDuke-Z3'
+    case {'gelDuke-Z3', 'salineDuke-Z3'}
         chanlocs = load('ANT_montage_templates.mat', 'chanlocs_dukeZ3');
         chanlocs = chanlocs.chanlocs_dukeZ3;
     case 'salineNet-Z7'
