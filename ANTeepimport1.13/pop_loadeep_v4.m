@@ -186,11 +186,4 @@ if ~isfield(EEG, 'endimp')
     EEG.endimp = [];
 end
 
-% EEG = eeg_checkset(EEG); % no need to check to reduce processing time
-
-% By default, we output EEG.data in double precision. If converting to
-% single is needed to save memory space, it should be done elsewhere. Such
-% as in pop_saveset().
-% EEG.data = double(EEG.data);
-
 return;
