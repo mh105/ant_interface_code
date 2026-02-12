@@ -246,6 +246,12 @@ end
 % Clear EEG_store to free up memory
 clearvars EEG_store
 
+%% Update EOG channel name
+% For backward compatibility, we need to update the EOG channel name under EEG.chanlocs
+% Since 2025, all EOG channels are named as 'VEOGL' instead of 'EOG'. This channel label
+% is assumed in ANT_interface_setmontage() to automatically set the correct montage.
+EEG.chanlocs(strcmp({EEG.chanlocs.labels}, 'EOG')).labels = 'VEOGL';
+
 %% Set montage
 % This function does two things:
 %   - adds an empty reference channel back
