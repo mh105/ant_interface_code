@@ -7,7 +7,7 @@ function [ EEG ] = ANT_interface_readcnt(filename, filepath, dsrate, verbose)
 % (if the recording was broken into multiple segments) with the same naming
 % before the file extension.
 %
-% Last edit: Alex He 03/05/2025
+% Last edit: Alex He 02/12/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .cnt file, the .evt and .seg
@@ -250,7 +250,9 @@ clearvars EEG_store
 % For backward compatibility, we need to update the EOG channel name under EEG.chanlocs
 % Since 2025, all EOG channels are named as 'VEOGL' instead of 'EOG'. This channel label
 % is assumed in ANT_interface_setmontage() to automatically set the correct montage.
-EEG.chanlocs(strcmp({EEG.chanlocs.labels}, 'EOG')).labels = 'VEOGL';
+if any(strcmp({EEG.chanlocs.labels}, 'EOG'))
+    EEG.chanlocs(strcmp({EEG.chanlocs.labels}, 'EOG')).labels = 'VEOGL';
+end
 
 %% Set montage
 % This function does two things:
