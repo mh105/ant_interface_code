@@ -224,7 +224,21 @@ for i = 2:length(EEG_store) % starts from 2nd index
     assert(size(EEG.data, 1) == size(EEG_store{i}.data, 1), 'Different numbers of channels!')
 
     % Use EEGLAB function pop_mergeset() to merge the two structures
+    original_event_count = length(EEG.event) + length(EEG_store{i}.event);
+    merge_boundary_index = length(EEG.event) + 1;
     EEG = pop_mergeset(EEG, EEG_store{i});
+
+    % Remove only the boundary event inserted between these two continuous
+    % chunks. If a real boundary exists at the same latency, eeg_checkset()
+    % already collapses the duplicate, so the event count does not increase.
+    if length(EEG.event) == original_event_count + 1
+        assert(strcmp(EEG.event(merge_boundary_index).type, 'boundary'), ...
+            'Could not identify the boundary event inserted by pop_mergeset().')
+        EEG.event(merge_boundary_index) = [];
+    else
+        assert(length(EEG.event) == original_event_count, ...
+            'Unexpected change in event count after pop_mergeset().')
+    end
 
     % Check if impedance measures should be incorporated
     if ~isempty(EEG_store{i}.endimp)
