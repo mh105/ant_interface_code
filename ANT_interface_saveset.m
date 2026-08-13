@@ -4,7 +4,7 @@ function [ EEG ] = ANT_interface_saveset(EEG_to_save, savefn, filepath, verbose)
 %
 % - saves the EEG structure as an EEGLAB .set format file for future use.
 %
-% Last edit: Alex He 05/05/2024
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - EEG_to_save:  EEG structurue containing recording data.

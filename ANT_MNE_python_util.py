@@ -26,7 +26,7 @@ https://mne.tools/stable/auto_tutorials/intro/plot_40_sensor_locations.html#sphx
 
 ------------------------
 Last update:
-Alex He -  03/26/2022
+Alex He - 08/13/2026
 """
 
 

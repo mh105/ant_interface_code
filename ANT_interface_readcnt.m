@@ -7,7 +7,7 @@ function [ EEG ] = ANT_interface_readcnt(filename, filepath, dsrate, verbose)
 % (if the recording was broken into multiple segments) with the same naming
 % before the file extension.
 %
-% Last edit: Alex He 02/12/2026
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .cnt file, the .evt and .seg
@@ -298,7 +298,7 @@ function [ EEG ] = ANT_interface_setmontage(EEG, montage)
 % and read with ANT_interface_readcnt(), or as BrainVision files and read
 % directly into MNE-Python.
 %
-% Last edit: Alex He 04/01/2025
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - EEG:          an EEG structure with EEG.data in the order of

@@ -1,11 +1,11 @@
-function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble) %#ok<INUSD>
+function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
 %
 % ANT INTERFACE CODES - LOADSET
 %
 % - used to load an EEGLAB format .set file containing the EEG structure
 % with the data and other recording information.
 %
-% Last edit: Alex He 05/04/2024
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .set file.
@@ -15,9 +15,6 @@ function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble) 
 %
 %           - verbose:      whether print messages during processing.
 %                           default: true
-%
-%           - todouble:     retained for backward compatibility. EEG.data
-%                           is always returned as double precision.
 %
 % Output:
 %           - EEG:          an EEGLAB structure containing all information
