@@ -17,8 +17,10 @@ function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
 %                           default: true
 %
 % Output:
-%           - EEG:          an EEGLAB structure containing all information
-%                           from the .set file with double-precision data.
+%           - EEG:          an EEGLAB structure loaded from the .set file.
+%                           EEG.data is returned in a double-precision array
+%                           containing the widened single-precision sample
+%                           values stored in the file.
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 3
     verbose = true;
