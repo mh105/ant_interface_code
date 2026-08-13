@@ -1,11 +1,11 @@
-function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble)
+function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
 %
 % ANT INTERFACE CODES - LOADSET
 %
 % - used to load an EEGLAB format .set file containing the EEG structure
 % with the data and other recording information.
 %
-% Last edit: Alex He 05/04/2024
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .set file.
@@ -16,24 +16,20 @@ function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble)
 %           - verbose:      whether print messages during processing.
 %                           default: true
 %
-%           - todouble      whether convert EEG.data to double from single.
-%                           default: false
-%
 % Output:
-%           - EEG:          an EEGLAB structure containing all information
-%                           of the recording in .cnt file. 
+%           - EEG:          an EEGLAB structure loaded from the .set file.
+%                           EEG.data is returned in a double-precision array
+%                           containing the widened single-precision sample
+%                           values stored in the file.
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 3
     verbose = true;
-    todouble = false;
-elseif nargin < 4
-    todouble = false;
 end
 
 % addpath to the appropriate folders
-try 
+try
     SleepEEG_addpath(matlabroot);
-    
+
 catch
     % if using SleepEEG_addpath() fails, we will assume the current directory
     % has the ANT_interface_loadset.m or at least the folder containing it has
@@ -42,7 +38,7 @@ catch
 
     ANTinterface_path = which('ANT_interface_loadset');
     temp = strsplit(ANTinterface_path, 'ANT_interface_loadset.m');
-    
+
     % Add path to EEGLAB
     addpath(fullfile(temp{1}, 'eeglab14_1_2b'))
 end
@@ -54,16 +50,16 @@ eeglab nogui;
 if verbose; tic; end
 % Call pop_loadset.m function from EEGLAB to load .set file
 EEG = pop_loadset(filename, filepath);
+assert(isa(EEG.data, 'single'), ...
+    'ANT_interface_loadset() requires EEG.data stored in single precision.');
+EEG.data = double(EEG.data);
+assert(isa(EEG.data, 'double'), ...
+    'ANT_interface_loadset() must return EEG.data in double precision.');
 if verbose
     disp(' ')
     disp('Total time taken in Loading the dataset...')
     disp(' ')
     toc
-end
-
-%% Change EEG data from single to double
-if todouble && ~isa(EEG.data, 'double')
-    EEG.data = double(EEG.data);
 end
 
 end

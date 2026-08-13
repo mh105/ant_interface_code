@@ -7,7 +7,7 @@ function [ EEG ] = ANT_interface_readcnt(filename, filepath, dsrate, verbose)
 % (if the recording was broken into multiple segments) with the same naming
 % before the file extension.
 %
-% Last edit: Alex He 02/12/2026
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - filename:     file name of the .cnt file, the .evt and .seg
@@ -273,6 +273,8 @@ end
 %   - adds an empty reference channel back
 %   - fills in the channel location info from a template
 EEG = ANT_interface_setmontage(EEG, 'auto');
+assert(isa(EEG.data, 'double'), ...
+    'ANT_interface_readcnt() must return EEG.data in double precision.');
 
 end
 
@@ -296,7 +298,7 @@ function [ EEG ] = ANT_interface_setmontage(EEG, montage)
 % and read with ANT_interface_readcnt(), or as BrainVision files and read
 % directly into MNE-Python.
 %
-% Last edit: Alex He 04/01/2025
+% Last edit: Alex He 08/13/2026
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % Inputs:
 %           - EEG:          an EEG structure with EEG.data in the order of
@@ -346,7 +348,7 @@ if strcmp(montage, 'auto')
             ~any(cellfun(@(x) strcmp(x, 'VEOGL'), labels))
         montage = 'salineNet-Z7';
 
-    % 64-channel montages
+        % 64-channel montages
     elseif strcmp(labels{1}, 'VEOGL') && ...
             strcmp(labels{2}, '1Z') && ...
             ~any(cellfun(@(x) strcmp(x, '0Z'), labels)) && ...
