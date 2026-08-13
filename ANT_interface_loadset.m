@@ -51,6 +51,8 @@ eeglab nogui;
 if verbose; tic; end
 % Call pop_loadset.m function from EEGLAB to load .set file
 EEG = pop_loadset(filename, filepath);
+assert(isa(EEG.data, 'single'), ...
+    'ANT_interface_loadset() requires EEG.data stored in single precision.');
 EEG.data = double(EEG.data);
 assert(isa(EEG.data, 'double'), ...
     'ANT_interface_loadset() must return EEG.data in double precision.');
