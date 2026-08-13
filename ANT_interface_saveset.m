@@ -19,8 +19,9 @@ function [ EEG ] = ANT_interface_saveset(EEG_to_save, savefn, filepath, verbose)
 %
 % Output:
 %           - EEG:          an EEGLAB structure containing all information
-%                           from the .set file. EEG.data remains double in
-%                           memory but is stored as single precision.
+%                           from the .set file. EEG.data is stored as single
+%                           precision and returned as double precision with
+%                           the same single-precision sample values.
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 4
     verbose = true;
@@ -57,13 +58,14 @@ end
 % Call pop_saveset.m function from EEGLAB to save .set file
 assert(isa(EEG_to_save.data, 'double'), ...
     'ANT_interface_saveset() requires EEG.data in double precision.');
-EEG = EEG_to_save;
-EEG.data = single(EEG.data);
-EEG = pop_saveset(EEG, 'filename', savefn, 'filepath', filepath,...
+EEG_to_save.data = single(EEG_to_save.data);
+assert(isa(EEG_to_save.data, 'single'), ...
+    'ANT_interface_saveset() must convert EEG.data to single precision before saving.');
+EEG = pop_saveset(EEG_to_save, 'filename', savefn, 'filepath', filepath,...
     'savemode', 'onefile', 'version', '7.3');
 assert(isa(EEG.data, 'single'), ...
     'ANT_interface_saveset() must save EEG.data in single precision.');
-EEG.data = EEG_to_save.data;
+EEG.data = double(EEG.data);
 assert(isa(EEG.data, 'double'), ...
     'ANT_interface_saveset() must return EEG.data in double precision.');
 
