@@ -20,8 +20,8 @@ function [ EEG ] = ANT_interface_saveset(EEG_to_save, savefn, filepath, verbose)
 % Output:
 %           - EEG:          an EEGLAB structure containing all information
 %                           from the .set file. EEG.data is stored as single
-%                           precision and returned as double precision with
-%                           the same single-precision sample values.
+%                           precision and returned after widening the saved
+%                           single-precision sample values back to double.
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 4
     verbose = true;
