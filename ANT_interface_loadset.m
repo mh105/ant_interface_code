@@ -1,4 +1,4 @@
-function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
+function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble) %#ok<INUSD>
 %
 % ANT INTERFACE CODES - LOADSET
 %
@@ -16,9 +16,12 @@ function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
 %           - verbose:      whether print messages during processing.
 %                           default: true
 %
+%           - todouble:     retained for backward compatibility. EEG.data
+%                           is always returned as double precision.
+%
 % Output:
 %           - EEG:          an EEGLAB structure containing all information
-%                           of the recording in .cnt file. 
+%                           from the .set file with double-precision data.
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 3
     verbose = true;
@@ -48,8 +51,9 @@ eeglab nogui;
 if verbose; tic; end
 % Call pop_loadset.m function from EEGLAB to load .set file
 EEG = pop_loadset(filename, filepath);
+EEG.data = double(EEG.data);
 assert(isa(EEG.data, 'double'), ...
-    'ANT_interface_loadset() requires EEG.data stored in double precision.');
+    'ANT_interface_loadset() must return EEG.data in double precision.');
 if verbose
     disp(' ')
     disp('Total time taken in Loading the dataset...')
