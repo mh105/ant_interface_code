@@ -28,9 +28,9 @@ if nargin < 3
 end
 
 % addpath to the appropriate folders
-try 
+try
     SleepEEG_addpath(matlabroot);
-    
+
 catch
     % if using SleepEEG_addpath() fails, we will assume the current directory
     % has the ANT_interface_loadset.m or at least the folder containing it has
@@ -39,7 +39,7 @@ catch
 
     ANTinterface_path = which('ANT_interface_loadset');
     temp = strsplit(ANTinterface_path, 'ANT_interface_loadset.m');
-    
+
     % Add path to EEGLAB
     addpath(fullfile(temp{1}, 'eeglab14_1_2b'))
 end

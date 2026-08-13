@@ -29,24 +29,24 @@ end
 % addpath to the appropriate folders
 try
     SleepEEG_addpath(matlabroot);
-    
+
 catch
     % if using SleepEEG_addpath() fails, we will assume the current directory
-    % has the ANT_interface_loadset.m or at least the folder containing it has
+    % has the ANT_interface_saveset.m or at least the folder containing it has
     % been added to path when calling this function. We will try to addpath to
     % EEGLAB directly.
-    
+
     ANTinterface_path = which('ANT_interface_saveset');
     temp = strsplit(ANTinterface_path, 'ANT_interface_saveset.m');
-    
+
     % Add path to EEGLAB
     addpath(fullfile(temp{1}, 'eeglab14_1_2b'))
 end
 
+%% Saving the EEG structure in the current workspace
 % Start EEGLab
 eeglab nogui;
 
-%% Saving the EEG structure in the current workspace
 if verbose
     tic
     disp(' ')
