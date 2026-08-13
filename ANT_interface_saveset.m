@@ -54,21 +54,18 @@ if verbose
     disp(fullfile(filepath, savefn))
 end
 % Call pop_saveset.m function from EEGLAB to save .set file
+assert(isa(EEG_to_save.data, 'double'), ...
+    'ANT_interface_saveset() requires EEG.data in double precision.');
 EEG = pop_saveset(EEG_to_save, 'filename', savefn, 'filepath', filepath,...
     'savemode', 'onefile', 'version', '7.3');
+assert(isa(EEG.data, 'double'), ...
+    'ANT_interface_saveset() must preserve EEG.data in double precision.');
 
 if verbose
     disp(' ')
     disp('Total time taken in Saving the dataset...')
     disp(' ')
     toc
-    
-    % report the precision of EEG.data
-    if isa(EEG.data, 'single')
-        disp('EEG.data saved as single type.')
-    elseif isa(EEG.data, 'double')
-        disp('EEG.data saved as double type.')
-    end
 end
 
 end

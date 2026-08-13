@@ -273,6 +273,8 @@ end
 %   - adds an empty reference channel back
 %   - fills in the channel location info from a template
 EEG = ANT_interface_setmontage(EEG, 'auto');
+assert(isa(EEG.data, 'double'), ...
+    'ANT_interface_readcnt() must return EEG.data in double precision.');
 
 end
 

@@ -244,7 +244,7 @@ def ant_mne_create_raw(setfn, set_filepath, csvfn, dig_filepath, overwrite=True)
         # save this raw object in a FIF format to set_filepath directory
         if overwrite is not None:
             fif_fname = op.join(set_filepath, setfn.strip('.set') + '_raw.fif')
-            raw.save(fif_fname, overwrite=overwrite)
+            raw.save(fif_fname, fmt='double', overwrite=overwrite)
 
     else:
 
@@ -271,6 +271,6 @@ def ant_mne_create_raw(setfn, set_filepath, csvfn, dig_filepath, overwrite=True)
         # save this raw object in a FIF format to set_filepath directory
         if overwrite is not None:
             fif_fname = op.join(set_filepath, setfn.strip('.set') + '_raw.fif')
-            raw.save(fif_fname, overwrite=overwrite)
+            raw.save(fif_fname, fmt='double', overwrite=overwrite)
 
     return raw

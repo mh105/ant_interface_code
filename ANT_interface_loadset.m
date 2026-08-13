@@ -1,4 +1,4 @@
-function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble)
+function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose)
 %
 % ANT INTERFACE CODES - LOADSET
 %
@@ -16,18 +16,12 @@ function [ EEG ] = ANT_interface_loadset(filename, filepath, verbose, todouble)
 %           - verbose:      whether print messages during processing.
 %                           default: true
 %
-%           - todouble      whether convert EEG.data to double from single.
-%                           default: false
-%
 % Output:
 %           - EEG:          an EEGLAB structure containing all information
 %                           of the recording in .cnt file. 
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if nargin < 3
     verbose = true;
-    todouble = false;
-elseif nargin < 4
-    todouble = false;
 end
 
 % addpath to the appropriate folders
@@ -54,16 +48,13 @@ eeglab nogui;
 if verbose; tic; end
 % Call pop_loadset.m function from EEGLAB to load .set file
 EEG = pop_loadset(filename, filepath);
+assert(isa(EEG.data, 'double'), ...
+    'ANT_interface_loadset() requires EEG.data stored in double precision.');
 if verbose
     disp(' ')
     disp('Total time taken in Loading the dataset...')
     disp(' ')
     toc
-end
-
-%% Change EEG data from single to double
-if todouble && ~isa(EEG.data, 'double')
-    EEG.data = double(EEG.data);
 end
 
 end
